@@ -2,6 +2,7 @@ import slugify from "slugify";
 import { catchAsyncError } from "../../utils/catchAsyncError.js";
 import { AppError } from "../../utils/AppError.js";
 import { brandModel } from "./../../../Database/models/brand.model.js";
+import { productModel } from "../../../Database/models/product.model.js";
 import { deleteOne } from "../../handlers/factor.js";
 import { ApiFeatures } from "../../utils/ApiFeatures.js";
 import dotenv from "dotenv";
@@ -99,12 +100,6 @@ const deleteS3File = async (fileUrl) => {
 const deleteBrand = catchAsyncError(async (req, res, next) => {
   const { id } = req.params;
 
-  // Check if any products are using this brand
-  const hasProducts = await productModel.exists({ brand_id: id });
-  if (hasProducts) {
-    return next(new AppError("Cannot delete brand: Products are linked to this brand", 400));
-  }
-
   const brand = await brandModel.findById(id);
   if (!brand) {
     return next(new AppError("Brand not found", 404));
@@ -114,10 +109,11 @@ const deleteBrand = catchAsyncError(async (req, res, next) => {
     await deleteS3File(brand.logo);
   }
 
+  await productModel.deleteMany({ brand_id: id });
+
   await brandModel.findByIdAndDelete(id);
 
   res.status(200).json({ message: "Brand deleted successfully" });
 });
-
 
 export { addBrand, getAllBrands, updateBrand, deleteBrand, getSingleBrand };

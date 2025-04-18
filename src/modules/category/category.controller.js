@@ -1,5 +1,6 @@
 import slugify from "slugify";
 import { categoryModel } from "./../../../Database/models/category.model.js";
+import { productModel } from "../../../Database/models/product.model.js";
 import { catchAsyncError } from "../../utils/catchAsyncError.js";
 import { AppError } from "../../utils/AppError.js";
 import { deleteOne } from "../../handlers/factor.js";
@@ -101,12 +102,6 @@ const deleteS3File = async (fileUrl) => {
 const deleteCategory = catchAsyncError(async (req, res, next) => {
   const { id } = req.params;
 
-  // Check if any products are using this category
-  const hasProducts = await productModel.exists({ category_id: id });
-  if (hasProducts) {
-    return next(new AppError("Cannot delete category: Products are linked to this category", 400));
-  }
-
   const category = await categoryModel.findById(id);
   if (!category) {
     return next(new AppError("Category not found", 404));
@@ -115,6 +110,8 @@ const deleteCategory = catchAsyncError(async (req, res, next) => {
   if (category.Image) {
     await deleteS3File(category.Image);
   }
+
+  await productModel.deleteMany({ category_id: id });
 
   await categoryModel.findByIdAndDelete(id);
 

@@ -1,0 +1,353 @@
+/* Global Styles */
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fa;
+  margin-top: 50px;
+}
+
+.product-page-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+  background-color: #f8f9fa;
+}
+
+.product-details-container {
+  display: flex;
+  gap: 100px;
+  width: 80%;
+  max-width: 1200px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Product Images Section */
+.product-images-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.main-image-wrapper {
+  width: 400px;
+  height: auto;
+}
+
+.main-image {
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  object-fit: cover;
+}
+
+/* Image List & Navigation */
+.image-list-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  justify-content: center;
+}
+
+.image-list {
+  display: flex;
+  gap: 10px;
+  overflow: hidden;
+  max-width: 400px; /* Ensuring the row doesn't overflow */
+  padding: 5px;
+}
+
+.thumbnail-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border 0.3s ease-in-out;
+}
+
+.thumbnail-image:hover,
+.thumbnail-image:focus {
+  border-color: #e53935;
+}
+
+.arrow-btn {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  padding: 5px 10px;
+  font-size: 18px;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.arrow-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.left-arrow {
+  margin-right: 10px;
+}
+
+.right-arrow {
+  margin-left: 10px;
+}
+
+/* Product Info Section */
+.product-info-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-name {
+  margin-bottom: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.product-price {
+  display: flex;
+  gap: 5px;
+  align-items: baseline;
+}
+
+.current-price {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #e53935;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.discount {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #388e3c;
+}
+
+.size-section,
+.color-section,
+.description-section {
+  margin-top: 10px;
+}
+
+h3 {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.variations-container {
+  display: flex;
+  gap: 2px;
+  padding-left: 5px;
+}
+
+.variation-thumbnail {
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.size-options {
+  display: flex;
+  gap: 10px;
+}
+
+.size-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.size-btn:hover {
+  background-color: #f8f8f8;
+  border-color: #388e3c;
+}
+
+.size-btn.selected {
+  background-color: #388e3c;
+  color: white;
+  border-color: #388e3c;
+}
+
+.quantity-options {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-btn {
+  padding: 5px 10px;
+  font-size: 18px;
+  border: none;
+  cursor: pointer;
+  background: #f0f0f0;
+}
+
+.quantity-value {
+  font-size: 18px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.add-to-bag-btn,
+.buy-now-btn {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.add-to-bag-btn {
+  background-color: #388e3c;
+  color: white;
+}
+
+.add-to-bag-btn:hover {
+  background-color: #2e7d32;
+}
+
+.buy-now-btn {
+  background-color: #e53935;
+  color: white;
+}
+
+.buy-now-btn:hover {
+  background-color: #d32f2f;
+}
+
+/* Description Section */
+.description-section ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.description-section li {
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Pincode & Quantity Section */
+.quantity-selector,
+.pincode-checker {
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.quantity-selector label,
+.pincode-checker label {
+  margin-right: 0.5rem;
+}
+
+.quantity-selector input,
+.pincode-checker input {
+  width: 70px;
+  padding: 5px;
+  text-align: center;
+}
+
+.pincode-checker button {
+  margin-left: 0.5rem;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pincode-checker button:hover {
+  background-color: #0056b3;
+}
+
+.delivery-message {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+  .product-details-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+  }
+
+  .product-images-section {
+    align-items: center;
+  }
+
+  .image-list {
+    max-width: 350px;
+  }
+
+  .size-options {
+    justify-content: center;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .product-details-container {
+    width: 95%;
+  }
+
+  .image-list {
+    max-width: 300px;
+  }
+
+  .thumbnail-image {
+    width: 50px;
+    height: 50px;
+  }
+
+  .main-image-wrapper {
+    width: 100%;
+  }
+
+  .product-name {
+    font-size: 1.5rem;
+  }
+
+  .product-price {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .size-options {
+    flex-wrap: wrap;
+  }
+}

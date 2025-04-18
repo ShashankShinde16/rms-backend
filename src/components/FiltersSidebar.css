@@ -1,0 +1,33 @@
+/* filtersSidebar.css */
+
+.filters-sidebar {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .filters-sidebar h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .filter-category, .filter-price {
+    margin-bottom: 20px;
+  }
+  
+  .filter-category h3, .filter-price h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .filters-sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .filters-sidebar li {
+    margin-bottom: 10px;
+  }
+  

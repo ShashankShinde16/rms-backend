@@ -1,0 +1,162 @@
+/* General container styles */
+.cart-container {
+  display: flex;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Left Section: Cart Items */
+.cart-left {
+  flex: 3;
+  margin-right: 20px;
+}
+
+.cart-left h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  padding: 15px;
+}
+
+.cart-item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.cart-item-details {
+  flex: 1;
+  margin-left: 20px;
+}
+
+.cart-item-details h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+}
+
+.cart-item-details p {
+  margin: 0 0 5px 0;
+}
+
+.in-stock {
+  color: #2e7d32;
+}
+
+.out-of-stock {
+  color: #d32f2f;
+}
+
+/* Right Section: Price Summary */
+.price-summary {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  height: fit-content;
+}
+
+.price-summary h3 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.price-summary p {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 10px 0;
+}
+
+.price-summary .discount,
+.price-summary .delivery {
+  color: #2e7d32;
+}
+
+.price-summary .total {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0 10px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.price-summary .discount-message {
+  color: #2e7d32;
+  margin-top: 10px;
+}
+
+.place-order-btn {
+  background-color: #fb641b;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.place-order-btn:hover {
+  background-color: #f0630d;
+}
+
+/* Cart item actions (remove and quantity dropdown) */
+.cart-item-actions {
+  text-align: center;
+}
+
+.quantity-dropdown {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  width: 60px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.remove {
+  background: none;
+  border: none;
+  color: #d32f2f;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.remove:hover {
+  text-decoration: underline;
+}
+
+/* Empty cart message */
+.cart-empty {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 50px;
+}
+
+/* Responsive layout for small screens */
+@media (max-width: 768px) {
+  .cart-container {
+    flex-direction: column;
+  }
+
+  .cart-left {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .price-summary {
+    margin-top: 20px;
+  }
+}

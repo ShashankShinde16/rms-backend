@@ -1,0 +1,48 @@
+/* HeroCarousel Wrapper */
+.hero-carousel-wrapper {
+    margin: 0;
+    padding: 0;
+}
+
+/* HeroCarousel */
+.hero-carousel {
+    /* position: relative; */
+    width: 100%;
+    /* height: 100vh; Keep this one at full viewport height */
+    overflow: hidden;
+    /* margin: 0; Remove any margin */
+}
+
+/* Remove border on click/focus */
+.hero-carousel .slick-slide img:focus {
+    outline: none;
+}
+
+/* Make images fill the container */
+.hero-carousel .slick-slide img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Hide arrows */
+.hero-carousel .slick-prev,
+.hero-carousel .slick-next {
+    display: block !important;
+    z-index: 10;
+}
+
+
+/* Optional: For adding transition styles */
+.slick-prev, .slick-next {
+    width: 50px;
+    height: 50px;
+}
+
+.slick-prev {
+    left: 10px !important;
+}
+
+.slick-next {
+    right: 10px !important;
+}

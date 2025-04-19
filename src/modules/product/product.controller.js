@@ -231,6 +231,28 @@ const getProductsByBrand = catchAsyncError(async (req, res, next) => {
   res.status(200).json({ message: "success", products });
 });
 
+const searchProducts = catchAsyncError(async (req, res, next) => {
+    const query = req.query.q || "";
+
+    const products = await productModel
+      .find({
+        deleted: false,
+      })
+      .populate("category_id", "name")
+      .populate("subcategory_id", "name");
+
+    // Filter on product name, category name, or subcategory name
+    const filtered = products.filter((product) => {
+      const q = query.toLowerCase();
+      return (
+        product.name.toLowerCase().includes(q) ||
+        product.category_id?.name.toLowerCase().includes(q) ||
+        product.subcategory_id?.name.toLowerCase().includes(q)
+      );
+    });
+    res.status(200).json({ message: "success", products: filtered });
+});
+
 
 export {
   addProduct,
@@ -242,4 +264,5 @@ export {
   deleteProductImage,
   getProductsByCategory,
   getProductsByBrand,
+  searchProducts,
 };

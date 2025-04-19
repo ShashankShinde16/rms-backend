@@ -8,8 +8,8 @@ export const resend = new Resend(process.env.RESEND_KEY); // Replace with your R
 export const sendOrderConfirmationEmail = async ({ to, name, orderId }) => {
     try {
       const response = await resend.emails.send({
-        from: "onboarding@resend.dev",
-        to: "rendomuse16@gmail.com",
+        from: "onboarding@rmsjeans.com",
+        to,
         subject: "Order Confirmation",
         html: `
           <h2>Hi ${name},</h2>

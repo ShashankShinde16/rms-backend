@@ -22,8 +22,8 @@ const sendOtp = catchAsyncError(async (req, res, next) => {
   await otpModel.create({ email, otp, expiresAt });
 
   await resend.emails.send({
-    from: "onboarding@resend.dev",
-    to: "rendomuse16@gmail.com", //email,
+    from: "auth@rmsjeans.com",
+    to: email,
     subject: "Your OTP Code",
     html: `<p>Your OTP is <strong>${otp}</strong>. It is valid for 5 minutes.</p>`,
   });

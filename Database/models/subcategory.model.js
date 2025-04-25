@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 
 const subCategorySchema = new Schema(
   {
-    name: {
+   name : {
       type: String,
       required: true,
       minLength: [1, "Too Short"],

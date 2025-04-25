@@ -11,7 +11,7 @@ const wishListRouter = express.Router();
 
 wishListRouter
   .route("/")
-  .patch(
+  .post(
     protectedRoutes,
     allowedTo("user"),
     validate(addToWishListValidation),

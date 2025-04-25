@@ -58,18 +58,25 @@ const updateUser = catchAsyncError(async (req, res, next) => {
 });
 
 const changeUserPassword = catchAsyncError(async (req, res, next) => {
-  const id = req.user._id;
-  req.body.passwordChangedAt = Date.now();
-  console.log(req.body.passwordChangedAt);
-  const changeUserPassword = await userModel.findByIdAndUpdate(id, req.body, {
-    new: true,
-  });
+  const { email, password } = req.body;
 
-  changeUserPassword &&
-    res.status(201).json({ message: "success", changeUserPassword });
+  if (!email || !password) {
+    return next(new AppError("Email and new password are required", 400));
+  }
 
-  !changeUserPassword && next(new AppError("User was not found", 404));
+  const user = await userModel.findOne({ email });
+
+  if (!user) {
+    return next(new AppError("User not found with this email", 404));
+  }
+
+  user.password = password;
+  user.passwordChangedAt = Date.now();
+  await user.save(); // trigger pre-save hash
+
+  res.status(200).json({ message: "Password reset successful" });
 });
+
 const deleteUser = deleteOne(userModel, "user");
 
 export { addUser, getAllUsers, updateUser, deleteUser, changeUserPassword, getUserById };

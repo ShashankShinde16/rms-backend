@@ -73,8 +73,8 @@ productRouter
 productRouter
   .route("/brand/:brandName")
   .get(
-    protectedRoutes,
-    allowedTo("Admin", "user"),
+    // protectedRoutes,
+    // allowedTo("Admin", "user"),
     // validate(getProductsByBrandValidation),
     product.getProductsByBrand);
 

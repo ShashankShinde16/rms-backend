@@ -7,10 +7,20 @@ import { otpModel } from "../../../Database/models/otp.model.js";
 import { resend } from "../../utils/resendClient.js";
 
 const sendOtp = catchAsyncError(async (req, res, next) => {
-  const { email } = req.body;
-  let isUserExist = await userModel.findOne({ email: email });
-  if (isUserExist) {
-    return next(new AppError("Account is already exist!", 409));
+  const { email, purpose } = req.body;
+
+  const user = await userModel.findOne({ email });
+
+  if (purpose === "signup") {
+    if (user) {
+      return next(new AppError("Account already exists!", 409));
+    }
+  }
+
+  if (purpose === "reset") {
+    if (!user) {
+      return next(new AppError("No account found with this email!", 404));
+    }
   }
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString();

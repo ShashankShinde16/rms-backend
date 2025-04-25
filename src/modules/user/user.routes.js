@@ -21,6 +21,8 @@ userRouter
   .get(protectedRoutes,User.getUserById)
   .put(protectedRoutes,validate(updateUserValidation), User.updateUser)
   .delete(validate(deleteUserValidation), User.deleteUser)
-  .patch(protectedRoutes,validate(changeUserPasswordValidation), User.changeUserPassword);
+  .patch(
+    // validate(changeUserPasswordValidation), 
+    User.changeUserPassword);
 
 export default userRouter;

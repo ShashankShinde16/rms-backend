@@ -16,6 +16,7 @@ const updateUserValidation = Joi.object({
   blocked: Joi.boolean(),
   wishlist: Joi.array().items(Joi.any()),
   addresses: Joi.array().items(Joi.any()),
+  coupon: Joi.array().items(Joi.string().hex().length(24)).optional(),
   createdAt: Joi.date(),
   updatedAt: Joi.date(),
   __v: Joi.number(),

@@ -45,9 +45,10 @@ productRouter
   .get(product.getAllProducts);
 
 productRouter.get("/search", product.searchProducts);
+productRouter.get("/search/suggestions", product.searchSuggestions);
 
 productRouter
-  .route("/:id")
+  .route("/:id([0-9a-fA-F]{24})")
   .patch(
     protectedRoutes,
     allowedTo("Admin"),
@@ -61,6 +62,10 @@ productRouter
     product.deleteProduct
   )
   .get(validate(getSpecificProductValidation), product.getSpecificProduct);
+
+productRouter
+  .route("/fabrics")
+  .get(product.getFabric);
 
 productRouter
   .route("/category/:categoryId")

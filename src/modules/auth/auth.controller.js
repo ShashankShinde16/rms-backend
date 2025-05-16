@@ -4,17 +4,31 @@ import { catchAsyncError } from "../../utils/catchAsyncError.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { otpModel } from "../../../Database/models/otp.model.js";
+import dotenv from "dotenv";
+dotenv.config();
+import twilio from "twilio";
 import { resend } from "../../utils/resendClient.js";
 
+const accountSid = process.env.TWILIO_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = twilio(accountSid, authToken);
+
 const sendOtp = catchAsyncError(async (req, res, next) => {
-  const { email, purpose } = req.body;
+  const { email, phone, purpose } = req.body;
 
   const user = await userModel.findOne({ email });
 
   if (purpose === "signup") {
+    if (!phone)
+      return next(new AppError("Phone number is required", 400));
     if (user) {
       return next(new AppError("Account already exists!", 409));
     }
+  }
+
+  if (purpose === "verify-phone") {
+    if (!phone)
+      return next(new AppError("Phone number is required", 400));
   }
 
   if (purpose === "reset") {
@@ -31,11 +45,19 @@ const sendOtp = catchAsyncError(async (req, res, next) => {
 
   await otpModel.create({ email, otp, expiresAt });
 
-  await resend.emails.send({
-    from: "auth@rmsjeans.com",
-    to: email,
-    subject: "Your OTP Code",
-    html: `<p>Your OTP is <strong>${otp}</strong>. It is valid for 5 minutes.</p>`,
+  if (purpose != "verify-phone") {
+    await resend.emails.send({
+      from: "auth@rmsjeans.com",
+      to: email,
+      subject: "Your OTP Code",
+      html: `<p>Your OTP is <strong>${otp}</strong>. It is valid for 5 minutes.</p>`,
+    });
+  }
+
+  await client.messages.create({
+    body: `Your OTP is ${otp}. It is valid for 5 minutes.`,
+    from: process.env.TWILIO_PHONE_NUMBER,
+    to: `+91${phone}`, // Or any phone number you want to send to
   });
 
   res.status(200).json({ message: "OTP sent successfully" });
@@ -75,6 +97,7 @@ const signUp = catchAsyncError(async (req, res, next) => {
     { email: user.email, name: user.name, id: user._id, role: user.role },
     "JR"
   );
+
   res.status(201).json({ message: "success", user, token });
 });
 
@@ -91,7 +114,7 @@ const signIn = catchAsyncError(async (req, res, next) => {
   res.status(201).json({
     message: "success",
     token,
-    user: { role: user.role, name: user.name, userID: user._id},
+    user: { role: user.role, name: user.name, userID: user._id },
   });
 });
 
@@ -117,7 +140,7 @@ const protectedRoutes = catchAsyncError(async (req, res, next) => {
   // console.log(decoded.iat, "-------------->",passwordChangedAt);
 
   req.user = user;
-  
+
   next();
 });
 
@@ -133,4 +156,4 @@ const allowedTo = (...roles) => {
     next();
   });
 };
-export { sendOtp, verifyOtp ,signUp, signIn, protectedRoutes, allowedTo };
+export { sendOtp, verifyOtp, signUp, signIn, protectedRoutes, allowedTo };

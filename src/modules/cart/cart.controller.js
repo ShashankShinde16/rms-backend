@@ -9,21 +9,21 @@ function calcTotalPrice(cart) {
   let totalAfterDiscount = 0;
 
   cart.cartItem.forEach((item) => {
-    const quantity = parseInt(item.quantity) || 1;
-    const price = parseInt(item.price) || 0;
+    const quantity = item.quantity || 1;
+    const price = item.price || 0;
     const itemTotal = quantity * price;
 
     totalPrice += itemTotal;
 
     // Handle item-level discount
-    const discount = parseInt(item.totalProductDiscount) || 0;
-    const itemDiscountedPrice = itemTotal - (itemTotal * discount) / 100;
+    const discount = item.totalProductDiscount || 0;
+    const itemDiscountedPrice = totalPrice - (itemTotal * (discount / 100));
 
     totalAfterDiscount += itemDiscountedPrice;
   });
 
-  cart.totalPrice = parseInt(totalPrice);
-  cart.totalPriceAfterDiscount = parseInt(totalAfterDiscount);
+  cart.totalPrice = Math.ceil(totalPrice);
+  cart.totalPriceAfterDiscount = Math.ceil(totalAfterDiscount);
 }
 
 const addProductToCart = catchAsyncError(async (req, res, next) => {
@@ -116,7 +116,7 @@ const applyCoupon = catchAsyncError(async (req, res, next) => {
   let cart = await cartModel.findOne({ userId: req.user._id });
 
   cart.totalPriceAfterDiscount =
-    cart.totalPrice - (cart.totalPrice * coupon.discount) / 100;
+    Math.ceil(cart.totalPrice - (cart.totalPrice * (coupon.discount / 100)));
 
   cart.discount = coupon.discount;
 

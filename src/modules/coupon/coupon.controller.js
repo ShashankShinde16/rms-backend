@@ -4,27 +4,53 @@ import { deleteOne } from "../../handlers/factor.js";
 import { ApiFeatures } from "../../utils/ApiFeatures.js";
 import { couponModel } from "../../../Database/models/coupon.model.js";
 import { cartModel } from "../../../Database/models/cart.model.js";
+import { userModel } from "../../../Database/models/user.model.js";
 import QRCode from "qrcode";
 
 const createCoupon = catchAsyncError(async (req, res, next) => {
-  const createCoupon = new couponModel(req.body);
+  const { couponCode, expires, discount } = req.body;
+
+  const createCoupon = new couponModel({
+    code: couponCode,
+    expires: new Date(expires),
+    discount,
+  });
+
   await createCoupon.save();
 
   res.status(201).json({ message: "success", createCoupon });
 });
 
+
 const getAllCoupons = catchAsyncError(async (req, res, next) => {
-  let apiFeature = new ApiFeatures(couponModel.find(), req.query)
-    .fields()
-    .filteration()
-    .search()
-    .sort();
-  const PAGE_NUMBER = apiFeature.queryString.page * 1 || 1;
-  const getAllCoupons = await apiFeature.mongooseQuery;
+  // let apiFeature = new ApiFeatures(couponModel.find({userId:req.user._id}), req.query)
+  //   .fields()
+  //   .filteration()
+  //   .search()
+  //   .sort();
+  // const PAGE_NUMBER = apiFeature.queryString.page * 1 || 1;
+  const getAllCoupons = await userModel.findOne({ _id: req.user._id }).populate("coupon");
+
+  if (!getAllCoupons) {
+    return next(new AppError("User not found", 404));
+  }
+
 
   res
     .status(201)
-    .json({ page: PAGE_NUMBER, message: "success", getAllCoupons });
+    .json({message: "success", getAllCoupons });
+});
+
+const getAllCouponsToAdmin = catchAsyncError(async (req, res, next) => {
+  const getAllCoupons = await couponModel.find({ });
+
+  if (!getAllCoupons) {
+    return next(new AppError("User not found", 404));
+  }
+
+  res
+    .status(201)
+    .json({message: "success", getAllCoupons });
 });
 
 const getSpecificCoupon = catchAsyncError(async (req, res, next) => {
@@ -57,7 +83,7 @@ const getCouponByCode = catchAsyncError(async (req, res, next) => {
 
   if (!coupon) return next(new AppError("Invalid coupon code", 404));
 
-  // Optional: check if expired or usage limit exceeded
+  // Check if expired
   const now = new Date();
   if (new Date(coupon.expiresIn) < now) {
     return next(new AppError("Coupon has expired", 400));
@@ -66,31 +92,41 @@ const getCouponByCode = catchAsyncError(async (req, res, next) => {
   const cart = await cartModel.findOne({ userId: req.user._id });
   if (!cart) return next(new AppError("Cart not found", 404));
 
-  // Apply coupon discount
-  cart.discount = coupon.discount;
-  let afterDiscount = 0
-    // Then apply coupon discount
-    if (cart.discount > 0) {
-      afterDiscount = parseInt((cart.totalPriceAfterDiscount * cart.discount) / 100);
-      cart.totalPriceAfterDiscount = parseInt(
-        cart.totalPriceAfterDiscount - (cart.totalPriceAfterDiscount * cart.discount) / 100
-      );
-    }
-  
-    await cart.save();
+  // Make sure cart has an original price field
+  if (!cart.originalTotalPrice) {
+    cart.originalTotalPrice = cart.totalPriceAfterDiscount;  // Initialize only if not set
+  }
+
+  // Calculate discount from originalTotalPrice
+  let discountAmount = 0;
+  if (coupon.discount > 0) {
+    discountAmount = parseInt((cart.originalTotalPrice * coupon.discount) / 100);
+    cart.totalPriceAfterDiscount = cart.originalTotalPrice - discountAmount;
+  }
+
+  // Save applied coupon info (optional)
+  cart.appliedCoupon = {
+    code: coupon.code,
+    discount: coupon.discount,
+  };
+
+  await cart.save();
 
   res.status(200).json({
     message: "success",
     valid: true,
-    discountAmount: afterDiscount, // Adjust logic as per your model
+    discountAmount: discountAmount,
+    totalPriceAfterDiscount: cart.totalPriceAfterDiscount,
   });
 });
+
 
 
 const deleteCoupon = deleteOne(couponModel, "Coupon");
 export {
   createCoupon,
   getAllCoupons,
+  getAllCouponsToAdmin,
   getSpecificCoupon,
   updateCoupon,
   deleteCoupon,

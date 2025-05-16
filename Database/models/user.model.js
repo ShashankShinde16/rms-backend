@@ -38,6 +38,7 @@ const userSchema = new Schema(
     },
 
     wishlist: [{ type: Schema.ObjectId, ref: "product" }],
+    coupon: [{ type: Schema.ObjectId, ref: "coupon" }],
     addresses: [
       {
         city: String,

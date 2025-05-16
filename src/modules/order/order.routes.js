@@ -42,5 +42,12 @@ orderRouter
     order.cancelOrder
   );
   
+  //dashboard
+  orderRouter.get(
+    "/dashboard",
+    protectedRoutes,
+    allowedTo("Admin"),
+    order.getDashboardInfo
+  );
   
 export default orderRouter;

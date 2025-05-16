@@ -3,7 +3,7 @@ import { Schema, model } from "mongoose";
 const sizeOptionSchema = new Schema({
   size: {
     type: String,
-    enum: ["XS", "S", "M", "L", "XL", "XXL"],
+    enum: ["M-38", "L-40", "XL-42", "2XL-44", "3XL-46", "4XL-48", "5XL-50", "6XL-52"],
     required: true,
   },
   discount: {
@@ -71,6 +71,15 @@ const productSchema = new Schema(
       type: Number,
       required: true,
     },
+    sleeve: {
+      type: String,
+      enum: ["Full Sleeve", "Half Sleeve"],
+      required: false,
+    },
+    fabric: {
+      type: String,
+      required: true,
+    },
     variations: [variationSchema],
     tags: [
       {
@@ -80,10 +89,6 @@ const productSchema = new Schema(
         },
       },
     ],
-    featured: {
-      type: Boolean,
-      default: false,
-    },
     deleted: {
       type: Boolean,
       default: false,

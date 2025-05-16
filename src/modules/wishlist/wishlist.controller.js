@@ -1,6 +1,7 @@
 import { catchAsyncError } from "../../utils/catchAsyncError.js";
 import { AppError } from "../../utils/AppError.js";
 import { userModel } from "../../../Database/models/user.model.js";
+import { couponModel } from "../../../Database/models/coupon.model.js";
 
 const addToWishList = catchAsyncError(async (req, res, next) => {
   const { productId } = req.body;

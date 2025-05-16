@@ -8,6 +8,9 @@ import dotenv, { configDotenv } from "dotenv";
 import { S3Client } from "@aws-sdk/client-s3";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { brandModel } from "../../../Database/models/brand.model.js";
+import { fabricModel } from "../../../Database/models/fabric.model.js";
+import { categoryModel } from "../../../Database/models/category.model.js";
+import { subCategoryModel } from "../../../Database/models/subcategory.model.js";
 
 dotenv.config();
 
@@ -23,14 +26,25 @@ const s3 = new S3Client({
 const addProduct = catchAsyncError(async (req, res, next) => {
   // console.log(req.body);
   // return;
-  const { name, description, gender, basePrice, featured } = req.body.product;
+  const { name, description, gender, basePrice, fabric, sleeve, } = req.body.product;
   const { variations, brand_id, category_id, subcategory_id } = req.body;
+
+    // 🧵 Add fabric to fabricModel if it doesn't exist
+    if (fabric && fabric.trim()) {
+      await fabricModel.updateOne(
+        { name: fabric.trim() },
+        { $setOnInsert: { name: fabric.trim() } },
+        { upsert: true }
+      );
+    }
+
   const addProduct = new productModel({
     name,
     description,
     gender,
     basePrice,
-    featured,
+    sleeve,
+    fabric,
     variations,
     category_id,
     subcategory_id,
@@ -76,8 +90,17 @@ const getSpecificProduct = catchAsyncError(async (req, res, next) => {
 
 const updateProduct = catchAsyncError(async (req, res, next) => {
   const { id } = req.params;
-  const { name, description, gender, basePrice, featured } = req.body.product;
+  const { name, description, gender, basePrice, fabric, sleeve, } = req.body.product;
   const { variations, brand_id, category_id, subcategory_id } = req.body;
+
+    // 🧵 Ensure fabric is in the fabric table
+    if (fabric && fabric.trim()) {
+      await fabricModel.updateOne(
+        { name: fabric.trim() },
+        { $setOnInsert: { name: fabric.trim() } },
+        { upsert: true }
+      );
+    }
 
   const updateProduct = await productModel.findByIdAndUpdate(
     id,
@@ -86,7 +109,8 @@ const updateProduct = catchAsyncError(async (req, res, next) => {
       description,
       gender,
       basePrice,
-      featured,
+      sleeve,
+      fabric,
       variations,
       category_id,
       subcategory_id,
@@ -187,6 +211,15 @@ const deleteProductImage = catchAsyncError(async (req, res) => {
   }
 });
 
+const getFabric = catchAsyncError(async (req, res, next) => {
+  const fabrics = await fabricModel.find();
+  if (!fabrics) {
+    return next(new AppError("No fabrics found", 404));
+  }
+  res.status(200).json({ message: "success", fabrics });
+});
+
+
 const getProductsByCategory = catchAsyncError(async (req, res, next) => {
   const { categoryId } = req.params;
   
@@ -253,6 +286,41 @@ const searchProducts = catchAsyncError(async (req, res, next) => {
     res.status(200).json({ message: "success", products: filtered });
 });
 
+const searchSuggestions = catchAsyncError(async (req, res, next) => {
+  const query = req.query.q || "";
+
+  if (!query) {
+    return res.status(200).json({ suggestions: [] });
+  }
+
+  const q = query.toLowerCase();
+
+  // Fetch products matching query
+  const products = await productModel.find({
+    name: { $regex: q, $options: "i" },
+    deleted: false,
+  }).select("name");
+
+  // Fetch categories matching query
+  const categories = await categoryModel.find({
+    name: { $regex: q, $options: "i" },
+  }).select("name");
+
+  // Fetch subcategories matching query
+  const subcategories = await subCategoryModel.find({
+    name: { $regex: q, $options: "i" },
+  }).select("name");
+
+  // Prepare combined suggestions
+  const suggestions = [
+    ...products.map(p => ({ type: "product", name: p.name })),
+    ...categories.map(c => ({ type: "category", name: c.name })),
+    ...subcategories.map(sc => ({ type: "subcategory", name: sc.name })),
+  ];
+
+  res.status(200).json({ suggestions });
+});
+
 
 export {
   addProduct,
@@ -262,7 +330,9 @@ export {
   deleteProduct,
   uploadProductImage,
   deleteProductImage,
+  getFabric,
   getProductsByCategory,
   getProductsByBrand,
   searchProducts,
+  searchSuggestions,
 };

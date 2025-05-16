@@ -19,6 +19,7 @@ const orderSchema = new Schema({
             totalProductDiscount:Number
           }
     ],
+    totalOrderPrice: Number,
     shippingAddress:{
         street:String,
         city:String,
@@ -26,7 +27,7 @@ const orderSchema = new Schema({
     },
     paymentMethod:{
         type:String,
-        enum:['card','cash', 'razorpay'],
+        enum:['card', 'cash', 'razorpay'],
         default:'cash'
     },
     isPaid:{

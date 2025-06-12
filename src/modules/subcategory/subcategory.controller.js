@@ -3,6 +3,7 @@ import { catchAsyncError } from "../../utils/catchAsyncError.js";
 import { AppError } from "../../utils/AppError.js";
 import { subCategoryModel } from "./../../../Database/models/subcategory.model.js";
 import { deleteOne } from "../../handlers/factor.js";
+import { productModel } from "./../../../Database/models/product.model.js";
 import { ApiFeatures } from "../../utils/ApiFeatures.js";
 
 const addSubCategory = catchAsyncError(async (req, res, next) => {

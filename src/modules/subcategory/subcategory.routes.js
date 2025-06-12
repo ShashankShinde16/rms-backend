@@ -31,7 +31,7 @@ subCategoryRouter
   )
   .delete(
     protectedRoutes,
-    allowedTo("Admin", "user"),
+    allowedTo("Admin"),
     // validate(deleteSubCategoryValidation),
     subCategory.deleteSubCategory
   );

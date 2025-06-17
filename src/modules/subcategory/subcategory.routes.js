@@ -7,6 +7,7 @@ import {
   updateSubCategoryValidation,
 } from "./subcategory.validation.js";
 import { allowedTo, protectedRoutes } from "../auth/auth.controller.js";
+import { uploadSingleFile } from "../../../multer/multer.js";
 
 const subCategoryRouter = express.Router({ mergeParams: true });
 
@@ -14,7 +15,8 @@ subCategoryRouter
   .route("/")
   .post(
     protectedRoutes,
-    allowedTo("Admin", "user"),
+    allowedTo("Admin"),
+    uploadSingleFile("Image", "subcategory"),
     // validate(addSubCategoryValidation),
     subCategory.addSubCategory
   )
@@ -25,7 +27,8 @@ subCategoryRouter
   .get(protectedRoutes, subCategory.getSingleSubCategory)
   .patch(
     protectedRoutes,
-    allowedTo("Admin", "user"),
+    allowedTo("Admin"),
+    uploadSingleFile("Image", "subcategory"),
     // validate(updateSubCategoryValidation),
     subCategory.updateSubCategory
   )

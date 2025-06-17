@@ -20,6 +20,9 @@ const subCategorySchema = new Schema(
       required: true,
       ref: "category",
     },
+    Image: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

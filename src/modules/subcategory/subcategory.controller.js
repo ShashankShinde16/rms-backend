@@ -7,12 +7,12 @@ import { productModel } from "./../../../Database/models/product.model.js";
 import { ApiFeatures } from "../../utils/ApiFeatures.js";
 
 const addSubCategory = catchAsyncError(async (req, res, next) => {
-  const { name, description } = req.body.form;
-  const { _id } = req.body.selected;
+  const { name, description, categoryId } = req.body;
   const addSubcategory = new subCategoryModel({
     name,
     description,
-    category: _id,
+    category: categoryId,
+    Image: req.file.location,
   });
   await addSubcategory.save();
 
@@ -49,20 +49,30 @@ const getAllSubCategories = catchAsyncError(async (req, res, next) => {
 
 const updateSubCategory = catchAsyncError(async (req, res, next) => {
   const { id } = req.params;
-  const { name, description } = req.body.form;
-  const { _id } = req.body.selected;
-  const updateSubCategory = await subCategoryModel.findByIdAndUpdate(
+  const { name, description, categoryId } = req.body;
+
+  // Find existing subcategory to get current image URL
+  const subcategory = await subCategoryModel.findById(id);
+  if (!subcategory) {
+    return next(new AppError("subcategory was not found", 404));
+  }
+
+  let imgUrl = subcategory.Image; // default existing image
+
+  // If new file uploaded, delete old image from S3 and update URL
+  if (req.file?.location) {
+    await deleteS3File(subcategory.Image); // delete old image from S3
+    imgUrl = req.file.location; // update with new image location
+  }
+
+  // Update subcategory document
+  const updatedSubCategory = await subCategoryModel.findByIdAndUpdate(
     id,
-    { name, description, category: _id },
-    {
-      new: true,
-    }
+    { name, description, category: categoryId, Image: imgUrl },
+    { new: true }
   );
 
-  updateSubCategory &&
-    res.status(201).json({ message: "success", updateSubCategory });
-
-  !updateSubCategory && next(new AppError("subcategory was not found", 404));
+  res.status(201).json({ message: "success", updatedSubCategory });
 });
 
 const deleteSubCategory = catchAsyncError(async (req, res, next) => {
